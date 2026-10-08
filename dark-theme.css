@@ -1,0 +1,313 @@
+/* Dark technical theme for Category CLI v3.
+   Override layer on top of styles.css (compiled Tailwind).
+   ID selectors win over Tailwind single-class utilities, so app.js
+   needs no changes. System mono/sans stacks keep it usable offline;
+   JetBrains Mono + Inter load from Google Fonts when online. */
+
+:root {
+  color-scheme: dark;
+  --ink: #e2e8f0;
+  --ink-dim: #94a3b8;
+  --ink-faint: #64748b;
+  --page: #060a13;
+  --panel: #0b1220;
+  --panel-2: #0f172a;
+  --panel-3: #131e33;
+  --line: #1e293b;
+  --line-soft: #334155;
+  --cat: #60a5fa;
+  --cat-deep: #2563eb;
+  --cat-wash: rgba(37, 99, 235, 0.16);
+  --act: #a78bfa;
+  --act-deep: #7c3aed;
+  --act-wash: rgba(124, 58, 237, 0.18);
+  --arg: #fbbf24;
+  --arg-deep: #d97706;
+  --arg-wash: rgba(217, 119, 6, 0.16);
+  --ok: #34d399;
+}
+
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---- shell + frame ---- */
+#app-shell {
+  background: var(--page);
+  color: var(--ink);
+}
+
+#app-frame {
+  background: var(--panel);
+  border-color: var(--line-soft);
+}
+
+#titlebar {
+  background: #070c17;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---- log surface: dot grid + 8px baselines, dark edition ---- */
+#log.dot-bg {
+  background-color: var(--panel);
+  background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.16) 1px, transparent 0);
+}
+
+#log .baseline-lines {
+  background-image: linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+}
+
+/* log entry cards: app.js renders bg-white border-[#e2e8f0] */
+#log-list > div {
+  background: var(--panel-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+#log pre {
+  background: #070c17;
+  border-color: var(--line);
+  color: #cbd5e1;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* category / action / arg pills inside log entries */
+#log [class*="bg-[#eff6ff]"] {
+  background: var(--cat-wash);
+  border-color: rgba(96, 165, 250, 0.45);
+  color: var(--cat);
+}
+
+#log [class*="bg-[#f5f3ff]"] {
+  background: var(--act-wash);
+  border-color: rgba(167, 139, 250, 0.45);
+  color: var(--act);
+}
+
+#log [class*="bg-[#fffbeb]"] {
+  background: var(--arg-wash);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: var(--arg);
+}
+
+/* file / dir / program tiles in output grid */
+#log [class*="bg-[#f8fafc]"] {
+  background: var(--panel-3);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+#log [class*="bg-white"] {
+  background: var(--panel-3);
+  border-color: var(--line-soft);
+  color: var(--ink-dim);
+}
+
+#log .log-dir-item[class*="bg-[#eff6ff]"] {
+  background: rgba(37, 99, 235, 0.14);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+#log .log-dir-item:hover {
+  background-color: rgba(37, 99, 235, 0.25);
+}
+
+#log [class*="border-dashed"] {
+  color: var(--ink-faint);
+  border-color: var(--line-soft);
+}
+
+.log-nav-btn {
+  background: var(--panel-3);
+  border-color: var(--line-soft);
+  color: var(--ink);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.log-nav-btn:hover:not(:disabled) {
+  background: var(--arg-wash);
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.log-nav-path {
+  color: var(--ink-dim);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ---- bottom bars ---- */
+#options,
+#actions,
+#categories {
+  background: rgba(7, 12, 23, 0.92);
+  border-top-color: var(--line);
+}
+
+#cmdline {
+  background: rgba(7, 12, 23, 0.95);
+  border-top-color: var(--line);
+}
+
+/* option / variant pills */
+#options [class*="bg-white"],
+#options [class*="bg-[#f8fafc]"] {
+  background: var(--panel-3);
+  border-color: var(--line);
+  color: var(--ink-dim);
+}
+
+#options [class*="bg-[#fffbeb]"] {
+  background: var(--arg-wash);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: var(--arg);
+}
+
+/* ---- chips ---- */
+#categories-chips .chip,
+#actions-chips .chip {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+#categories-chips .chip[class*="bg-[#f8fafc]"],
+#actions-chips .chip[class*="bg-[#f8fafc]"] {
+  background: var(--panel-3);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+#categories-chips .chip[class*="bg-[#f8fafc]"]:hover,
+#actions-chips .chip[class*="bg-[#f8fafc]"]:hover {
+  background: #18263f;
+  border-color: var(--line-soft);
+}
+
+/* selected category chip: app.js uses near-black fill, invisible on dark */
+#categories-chips .chip[class*="bg-[#0f172a]"] {
+  background: var(--cat-deep);
+  border-color: var(--cat-deep);
+  color: #fff;
+}
+
+/* unselected chip key badge: app.js uses dark fill, fine on dark */
+#categories-chips .chip-key,
+#actions-chips .chip-key {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* selected action chip keeps violet fill; unselected arg badge */
+#actions-chips .chip-arg[class*="bg-[#fef3c7]"] {
+  background: var(--arg-wash);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: var(--arg);
+}
+
+#categories-hint {
+  color: var(--ink-faint);
+}
+
+/* unselected chips/captions carry their own near-black text classes */
+#categories-chips [class*="text-[#0f172a]"],
+#actions-chips [class*="text-[#0f172a]"] {
+  color: var(--ink);
+}
+
+#options [class*="text-[#64748b]"] {
+  color: var(--ink-dim);
+}
+
+/* ---- command fields: empty states go dark, committed keeps signal color ---- */
+#field-cat[class*="bg-white"],
+#field-act[class*="bg-white"],
+#field-arg[class*="bg-white"] {
+  background: var(--panel-3);
+  border-color: var(--line-soft);
+  color: var(--ink-dim);
+}
+
+#field-cat[class*="bg-[#eff6ff]"] {
+  background: var(--cat-wash);
+  border-color: var(--cat);
+  color: var(--cat);
+}
+
+#field-act[class*="bg-[#f5f3ff]"] {
+  background: var(--act-wash);
+  border-color: var(--act);
+  color: var(--act);
+}
+
+#field-cat[class*="bg-[#2563eb]"] {
+  background: var(--cat-deep);
+  border-color: var(--cat-deep);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 0 18px rgba(37, 99, 235, 0.45);
+}
+
+#field-act[class*="bg-[#7c3aed]"] {
+  background: var(--act-deep);
+  border-color: var(--act-deep);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.25), 0 0 18px rgba(124, 58, 237, 0.45);
+}
+
+#field-arg[class*="bg-[#fffbeb]"] {
+  background: var(--arg-wash);
+  border-color: var(--arg-deep);
+  color: var(--arg);
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.2), 0 0 18px rgba(217, 119, 6, 0.3);
+}
+
+#cmdline [class*="text-[#cbd5e1]"] {
+  color: var(--ink-faint);
+}
+
+/* ---- go button ---- */
+.go-btn {
+  background: #15803d;
+  border-color: #15803d;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.go-btn:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+/* ---- scrollbars, selection, focus ---- */
+.app-scroll {
+  scrollbar-color: var(--line-soft) transparent;
+}
+
+.app-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-scroll::-webkit-scrollbar-thumb {
+  background: var(--line-soft);
+  border-radius: 8px;
+}
+
+#app-shell ::selection {
+  background: rgba(37, 99, 235, 0.5);
+}
+
+#app-shell:focus-visible {
+  outline: 2px solid var(--cat);
+  outline-offset: -2px;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--cat);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink {
+    animation: none;
+  }
+}
