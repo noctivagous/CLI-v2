@@ -98,7 +98,8 @@ Tradeoff: Loses UNIX pipe composability. Future version adds `| (pipe)` as a cat
 2.  Type:
     - `d` `l` `space` - list current directory
     - `d` `m` `space` `mydir` `enter` - make dir
-    - `d` `c` `space` `src` `enter` - change dir
+    - `d` `n` `space` `src` `enter` - navigate dir
+    - `d` `e` `space` `old` `space` `new` `enter` - rename dir
     - `f` `v` `space` `notes.txt` `enter` - view file
 
 Virtual FS included: `src/ docs/ projects/ notes.txt README.md`

@@ -1,1 +1,38 @@
-(function(){function m(a){var h=a.getAttribute("href");if(!h)return;try{var u=new URL(h,document.baseURI);if((u.protocol==="http:"||u.protocol==="https:")&&u.host!==location.host){a.target="_blank";a.rel="noopener noreferrer";}}catch(e){}}function s(){document.querySelectorAll("a[href]").forEach(m);}if(document.readyState!=="loading"){s();}else{document.addEventListener("DOMContentLoaded",s);}document.addEventListener("click",function(e){var a=e.target&&e.target.closest&&e.target.closest("a[href]");if(a){m(a);}},true);})();
+(function () {
+  function markExternal(anchor) {
+    var href = anchor.getAttribute("href");
+    if (!href) return;
+    try {
+      var url = new URL(href, document.baseURI);
+      if (
+        (url.protocol === "http:" || url.protocol === "https:") &&
+        url.host !== location.host
+      ) {
+        anchor.target = "_blank";
+        anchor.rel = "noopener noreferrer";
+      }
+    } catch (error) {}
+  }
+
+  function scan() {
+    document.querySelectorAll("a[href]").forEach(markExternal);
+  }
+
+  if (document.readyState !== "loading") {
+    scan();
+  } else {
+    document.addEventListener("DOMContentLoaded", scan);
+  }
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      var anchor =
+        event.target && event.target.closest && event.target.closest("a[href]");
+      if (anchor) {
+        markExternal(anchor);
+      }
+    },
+    true,
+  );
+})();

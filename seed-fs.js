@@ -1,66 +1,79 @@
 var D0 = {
-  "type": "dir",
-  "children": {
-    "src": {
-      "type": "dir",
-      "children": {
-        "index.ts": {
-          "type": "file",
-          "content": "// entry\nconsole.log(\"hello\")"
+  type: "dir",
+  children: {
+    Desktop: {
+      type: "dir",
+      children: {
+        "screenshot.png": {
+          type: "file",
+          content: "",
         },
-        "App.tsx": {
-          "type": "file",
-          "content": "export default function App() {}"
+      },
+    },
+    Documents: {
+      type: "dir",
+      children: {
+        "notes.txt": {
+          type: "file",
+          content: "TODO:\n- blend graphics + keyboard\n- keep baseline grid\n- commit with space",
         },
-        "components": {
-          "type": "dir",
-          "children": {
-            "Box.tsx": {
-              "type": "file",
-              "content": ""
-            }
-          }
-        }
-      }
-    },
-    "docs": {
-      "type": "dir",
-      "children": {
-        "readme.md": {
-          "type": "file",
-          "content": "# Docs\n\nWelcome to CLI v2"
+        "todo.md": {
+          type: "file",
+          content: "- [x] build v2\n- [ ] ship",
         },
-        "guide.md": {
-          "type": "file",
-          "content": "Usage guide..."
-        }
-      }
-    },
-    "projects": {
-      "type": "dir",
-      "children": {
-        "cli": {
-          "type": "dir",
-          "children": {
-            "v1.md": {
-              "type": "file",
-              "content": "v1 notes"
-            }
-          }
+        "resume.md": {
+          type: "file",
+          content: "# Resume\n\nCategory CLI — graphical + keyboard hybrid.",
         },
-        "site": {
-          "type": "dir",
-          "children": {}
-        }
-      }
+      },
     },
-    "notes.txt": {
-      "type": "file",
-      "content": "TODO:\n- blend graphics + keyboard\n- keep baseline grid\n- commit with space"
+    Downloads: {
+      type: "dir",
+      children: {
+        "archive.tar.gz": {
+          type: "file",
+          content: "",
+        },
+      },
     },
-    "todo.md": {
-      "type": "file",
-      "content": "- [x] build v2\n- [ ] ship"
-    }
-  }
+    Pictures: {
+      type: "dir",
+      children: {},
+    },
+    Projects: {
+      type: "dir",
+      children: {
+        cli: {
+          type: "dir",
+          children: {
+            "readme.md": {
+              type: "file",
+              content: "# CLI\n\nv1 notes",
+            },
+            "src": {
+              type: "dir",
+              children: {
+                "index.ts": {
+                  type: "file",
+                  content: "// entry\nconsole.log(\"hello\")",
+                },
+              },
+            },
+          },
+        },
+        site: {
+          type: "dir",
+          children: {},
+        },
+      },
+    },
+    ".bashrc": {
+      type: "file",
+      content: "export PATH=$PATH\nalias ll='ls -la'\n",
+    },
+    ".profile": {
+      type: "file",
+      content: "",
+    },
+  },
 };

@@ -24,10 +24,11 @@ var Z = {
           "nested path"
         ]
       },
-      "c": {
-        "label": "change",
-        "desc": "Change directory",
+      "n": {
+        "label": "navigate",
+        "desc": "Navigate directory",
         "needsArg": true,
+        "suggest": "dirs",
         "variants": [
           "to child",
           "to parent ..",
@@ -42,7 +43,17 @@ var Z = {
           "soft delete",
           "force recursive"
         ]
-      }
+      },
+      "e": {
+        "label": "rename",
+        "desc": "Rename folder",
+        "needsArg": true,
+        "suggest": "child-dirs",
+        "variants": [
+          "old new",
+          "unique prefix"
+        ]
+      },
     }
   },
   "f": {
