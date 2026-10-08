@@ -10,6 +10,16 @@ d (directory) > l (list) > [lists directory]   # keys: d l SPACE
 d (directory) > m (make) > Enter name: mydir    # keys: d m SPACE mydir ENTER
 ```
 
+ [d] directory - [l]ist [m]ake [r]emove [c]hange [p]wd [t]ree [b]ack
+  [f] file - [l]ist [v]iew [m]ake [d]elete [c]opy [b]ack
+  [s] system - [i]nfo [c]lear [h]istory [b]ack
+  [h] help
+    [n] network - [p]ing [c]onnect [l]ist
+  [p] process - [l]ist [k]ill
+  [g] git - [s]tatus [c]ommit [p]ush
+  
+  
+
 Build in this directory:
 
 - `Category-Cli-V2-Graphical.html` - Graphical + keyboard hybrid, now running v3 behavior (window title reads "Category CLI v3")
@@ -46,6 +56,8 @@ f:          [v]iew [e]dit [n]ew [d]elete
 s:          [i]nfo [c]lear [h]elp
 h:          [l]ist [c]ats
 ```
+
+
 
 Note: two action keys collide with category keys — `d` is both the directory category and `f > d (delete)`, and `h` is both the help category and `s > h`. When a category is previewed, the action meaning wins: `f d SPACE` deletes a file, `s h SPACE` runs system help. To pick a different category instead, press `ESC` (or `BACKSPACE`) to cancel the preview first.
 

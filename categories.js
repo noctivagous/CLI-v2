@@ -89,6 +89,34 @@ var Z = {
       }
     }
   },
+  "p": {
+    "label": "program",
+    "full": "PROGRAM",
+    "color": "#db2777",
+    "actions": {
+      "x": {
+        "label": "execute",
+        "desc": "Launch a program",
+        "needsArg": true,
+        "suggest": "programs",
+        "variants": [
+          "foreground",
+          "background",
+          "with args"
+        ]
+      },
+      "l": {
+        "label": "list",
+        "desc": "List programs",
+        "needsArg": false,
+        "variants": [
+          "all programs",
+          "recent",
+          "by name"
+        ]
+      }
+    }
+  },
   "s": {
     "label": "system",
     "full": "SYSTEM",
