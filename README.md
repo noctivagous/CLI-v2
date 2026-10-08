@@ -1,138 +1,150 @@
-# Category / Menu Based CLI — v3
+# Category CLI v3
 
-A rethink of the UNIX command line. Instead of memorizing 200 flat binaries (`ls`, `mkdir`, `rm`), you navigate 4 categories. The **action letter** commits the category — `SPACE` is only needed to run the action or to get its argument.
+A reorganization of the UNIX command line.
 
-> Original UNIX: programs launched individually and were short.
-> This CLI: programs don't exist individually. The CLI is redesigned around category menus inline.
+ Instead of memorizing a flat list of binaries (`ls`, `mkdir`, `rm`), you pick a **category**, then an **action**, then an optional **argument**.
+
+## Benefits
+
+UNIX discoverability is zero: you must know `ls` exists before you can use it.
+
+This CLI keeps valid next keys on screen. Beginners read the chips; experts chain `D L Return`.  UNIX pipe composability can be
+added later.
+
 
 ```
-d (directory) > l (list) > [lists directory]   # keys: d l SPACE
-d (directory) > m (make) > Enter name: mydir    # keys: d m SPACE mydir ENTER
+d (directory) › l (list) › Return          # list cwd
+d (directory) › m (make) › mydir › Return  # create a folder
+d (directory) › n (navigate) › Doc › Return  # unique prefix → Documents
 ```
 
- [d] directory - [l]ist [m]ake [r]emove [c]hange [p]wd [t]ree [b]ack
-  [f] file - [l]ist [v]iew [m]ake [d]elete [c]opy [b]ack
-  [s] system - [i]nfo [c]lear [h]istory [b]ack
-  [h] help
-    [n] network - [p]ing [c]onnect [l]ist
-  [p] process - [l]ist [k]ill
-  [g] git - [s]tatus [c]ommit [p]ush
-  
-  
+Open `Category-Cli-V2-Graphical.html` in a browser. No build step.
 
-Build in this directory:
+## Keyboard
 
-- `Category-Cli-V2-Graphical.html` - Graphical + keyboard hybrid, now running v3 behavior (window title reads "Category CLI v3")
+Each letter **commits** as you type. There is no separate preview-then-lock step.
 
-Open the file directly in a browser. No build step.
+| Step | Keys | What happens |
+| --- | --- | --- |
+| Category | `D` `F` `P` `S` `H` | Fills CAT. Category bar hides; action chips appear. |
+| Action | letter for that category | Fills ACT. Action bar hides. If the action needs an argument, ARG becomes active. If it does not, a **Go** button appears. |
+| Argument | printable keys, including Space | Appends to ARG. Tab cycles autocomplete when the action supports it. |
+| Run | Return / Enter, or tap **Go** | Executes. On Apple the button reads **Go ↩ Return**; elsewhere **Go ↵ Enter**. |
+| Back | Delete / Backspace / Escape | Trims ARG, then clears ACT, then clears CAT. Matching bars come back. |
 
-## Demo
+Space is **not** the run key. It is a character in ARG (folder and file names may contain spaces).
 
-**v3 interaction:**
+Instructions sit on the command line: to the right of ARG (`type folder name`, `type filename`, …) or to the right of Go (`press Return to list`).
 
-1. Press `D` - previews `directory`. Right panel shows all actions for D.
-2. Press `L` - commits to the directory category AND previews `list`. Box 1 locks (blue).
-3. Press `SPACE` - commits the action and executes. (If the action needs an argument, `SPACE` opens the arg box instead; type the arg, then `SPACE`/`ENTER` to run.)
-
-`LETTER` = select. The second letter commits the category. `SPACE` = run / arg. `ESC` / `B` = back. `BACKSPACE` = clear.
-
-## The Model
-
-**Command grammar:**
+## Categories
 
 ```
-command := category > action > [arg]
-        := LETTER (preview category)
-           LETTER (commit category, preview action)
-           SPACE  (run — or open the arg box when one is needed)
+[d] directory   [l]ist  [m]ake  [n]avigate  [r]emove  [e] rename
+[f] file        [v]iew  [e]dit  [n]ew       [d]elete
+[p] program     [x] execute     [l]ist
+[s] system      [i]nfo  [c]lear [h]elp
+[h] help        [l]ist  [c]ats
 ```
 
-It's modal, not flat. You stay inside a category while working.
+Chip colors: directory blue `#2563eb`, file cyan `#0891b2`, program pink `#db2777`, system green `#059669`, help amber `#d97706`. Action chips are solid magenta `#7c3aed`. The CAT field uses the selected category color; ACT stays magenta; ARG is amber.
 
-```
-Root:       [d]irectory [f]ile [s]ystem [h]elp
-d:          [l]ist [m]ake [c]hange [r]emove
-f:          [v]iew [e]dit [n]ew [d]elete
-s:          [i]nfo [c]lear [h]elp
-h:          [l]ist [c]ats
-```
+`d` is both the directory category and `f › d` (delete file). `h` is both help and `s › h` (system help). After CAT is filled, the letter is an action. Escape back to pick a different category.
 
+## Layout
 
+Fixed 100dvh window (`#app-shell` padded 12px / 24px from 640px). Dark title bar shows **Category CLI v3** and the current path (`cwd`).
 
-Note: two action keys collide with category keys — `d` is both the directory category and `f > d (delete)`, and `h` is both the help category and `s > h`. When a category is previewed, the action meaning wins: `f d SPACE` deletes a file, `s h SPACE` runs system help. To pick a different category instead, press `ESC` (or `BACKSPACE`) to cancel the preview first.
+The middle pane is the **output log** only. It starts empty. New cards **append** at the bottom (oldest first) and the pane scrolls to the latest. No “Output Log” heading and no always-on directory browser.
 
-## Visual Language
+Above the command footer, bars appear only when they apply:
 
-This is not a terminal with colors. It's a graphical layout that is still keyboard-driven.
+1. **Options** — autocomplete chips or real variants, after an action is chosen.
+2. **Actions** — while CAT is filled and ACT is empty.
+3. **Categories** — while CAT is empty.
+4. **Command line** — CAT › ACT › ARG, then Go when the action needs no argument, then the hint.
 
-The command line is broken into rectangle segments, each with its own type style, conforming to an 8px baseline grid:
+On viewports below 640px, chips stack the key over a short label (`D` / `dir`, `N` / `nav`). From 640px they are a single row with the full word.
 
-- **Box 1 - CATEGORY (Blue):** 180x88px, `#2563eb` border, `#eff6ff` preview, solid blue when committed. Tag: `1 CATEGORY`
-- **Box 2 - ACTION (Violet):** 180x88px, `#7c3aed` theme. Tag: `2 ACTION`
-- **Box 3 - ARG (Amber):** 240x88px, dashed when empty, solid when active. Tag: `3 ARG`
+## Directory list cards
 
-- Active: thick border + glow + blinking cursor
-- Committed: solid fill + checkmark
-- Empty: dashed gray
+`d › l` renders a grid of tiles. **Directory** tiles are clickable and replace that card’s listing in place (global `cwd` does not change). After the first dive, **Back** / **Forward** appear with the current path and walk a per-card history (clicking a new folder drops the forward stack). Files and program tiles are not navigable. Empty folders show `empty directory`.
 
-Context menu to the right is not help text - it's part of the command line. It shows all valid next keys for the current segment.
+A successful **navigate** log card is chips only (no “changed to …” body). Errors still show as text.
 
-Background is `#f8fafc` with a dot grid to make the baseline visible. Typography: JetBrains Mono for the big letter (32px), Inter 11px uppercase for labels.
+## Autocomplete
 
-## Why
+| Command | ARG chips | Tab / Enter |
+| --- | --- | --- |
+| `p › x` execute | program names | unique prefix is enough; tokens after a space stay as args |
+| `d › n` navigate | `..`, `/`, child folders of cwd | unique prefix (`Doc` → `Documents`) |
+| `d › e` rename | child folders only | `old new` (prefix on the old name) |
+| `d › m` make | none | type a folder name |
 
-**UNIX problem:** Discoverability is zero. You must know `ls` exists before you can use it. `man` is after the fact.
+## Virtual filesystem
 
-**This fix:**
+Mock home at `/` (cloned from `seed-fs.js` on load):
 
-1.  **Always visible options.** Pressing `D` shows you what you can do with directories.
-2.  **Preview without execution.** You can explore `D > L > M` without running anything until SPACE.
-3.  **Contextual args.** `m (make)` prompts `Enter name:` in its own box, instead of requiring `mkdir -p foo/bar` syntax.
-4.  **Two speeds:** Beginner pauses on `D` to read the menu, expert fast-chains `D L SPACE`.
+- `Desktop/` — `screenshot.png`
+- `Documents/` — `notes.txt`, `todo.md`, `resume.md`
+- `Downloads/` — `archive.tar.gz`
+- `Pictures/` — empty
+- `Projects/cli/` — `readme.md`, `src/index.ts`; `Projects/site/` empty
+- `.bashrc`, `.profile`
 
-Tradeoff: Loses UNIX pipe composability. Future version adds `| (pipe)` as a category.
+`s › c` clears the log only, not the filesystem.
 
-## How to Use
+## How to use
 
-1.  Open `Category-Cli-V2-Graphical.html`
-2.  Type:
-    - `d` `l` `space` - list current directory
-    - `d` `m` `space` `mydir` `enter` - make dir
-    - `d` `n` `space` `src` `enter` - navigate dir
-    - `d` `e` `space` `old` `space` `new` `enter` - rename dir
-    - `f` `v` `space` `notes.txt` `enter` - view file
+1. Open `Category-Cli-V2-Graphical.html`.
+2. Type:
+   - `d` `l` Return — list `/`
+   - `d` `m` `mydir` Return — make a folder
+   - `d` `n` `Doc` Return — navigate to `Documents`
+   - `d` `e` `Pictures` Space `Album` Return — rename
+   - `f` `v` `notes.txt` Return — view a file (from that directory)
+   - `p` `x` `py` Return — execute `python` (unique prefix)
 
-Virtual FS included: `src/ docs/ projects/ notes.txt README.md`
+On a phone, tap category and action chips, then **Go** when it appears.
 
 ## Files
 
 ```
-/category-cli/
-  README.md                         <- this file (v3)
-  Category-Cli-V2-Graphical.html    <- graphical keyboard blend, v3 behavior
+Category-Cli-V2-Graphical.html   page (title: Category CLI v3)
+app.js                           UI and command runner
+categories.js                    Z — categories, actions, colors, hints
+seed-fs.js                       D0 mock home
+programs.js                      PROGRAMS list
+styles.css                       Tailwind extract + layout / chip / Go styles
+dark-theme.css                   dark overlay
+external-links.js                off-site links open in a new tab
+vendor.js                        minified React 18.3.1 + ReactDOM
+README.md                        this file
 ```
+
+Scripts load in that order (classic scripts, not modules). Do not name a programs global `P0` — `vendor.js` uses `P0` as `Symbol.for("react.element")`.
 
 ## Architecture
 
-- Single-file React + Tailwind, no deps
-- State: `step` (0=category, 1=action, 2=arg), `preview`, `committedCategory`, `committedAction`, `fs`, `cwd`, `history`
-- Input is global `keydown` listener, not an `<input>` - keeps it keyboard-first
-- `SPACE` in step 0 is a no-op in v3: the category commits when the action letter is pressed
-- Output renders as a grid of file boxes, not plain text, to stay on baseline grid
+- No-build React in the page. Input is a `keydown` listener on the shell (`#app-shell`), not an `<input>`.
+- State: `step` (0 category, 1 action, 2 arg), committed/preview category and action, `arg`, `cwd`, `fs` from `cloneFs(D0)`, `history` (last 30 cards).
+- `styles.css` is a static Tailwind v3.4.18 extract. New class names in JS do nothing unless the matching CSS already exists — add a dedicated rule when you need a new utility.
+
 
 ## Changelog
 
-- **v3:** category commits on the action letter (`d l SPACE`); `SPACE` runs the action / opens the arg box. `SPACE` no longer commits the category.
-- **v2:** graphical + keyboard hybrid, `SPACE` committed every box (`d SPACE l SPACE`).
+- **v3 (current):** letter commits immediately; Return / Go runs. Category, action, and options bars hide as the command fills in. Mock home FS, program and directory autocomplete, in-place list browsing, log appends at the bottom.
+- **v3 (earlier):** category committed on the action letter; Space ran the command.
+- **v2:** graphical + keyboard hybrid; Space committed every box (`d Space l Space`).
 - **v1:** terminal prototype, text-only.
 
 ## Roadmap
 
-- [ ] Arg box autocomplete from real FS
-- [ ] 4th box for flags: `d > l > [a]ll`
-- [ ] `f > c (copy)` with two arg boxes side-by-side
-- [ ] `g (git)` category to prove it scales beyond files
-- [ ] Pipe category: `| (pipe)` to restore composability
+- [ ] File-name autocomplete (view / edit / delete / new)
+- [ ] Flags as a fourth segment: `d › l › [a]ll`
+- [ ] `f › copy` with two arg boxes
+- [ ] `g (git)` category
+- [ ] Pipe category to restore composability
 
 ---
+
 MIT / experiment.
