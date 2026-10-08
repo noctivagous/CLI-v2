@@ -100,6 +100,11 @@ function shortWord(word) {
   return SHORT_WORDS[word] || word;
 }
 
+function formatHint(text, enterKeyName) {
+  if (!text) return "";
+  return text.replace("{enter}", enterKeyName);
+}
+
 function isAppleOs() {
   const platform = navigator.platform || "";
   const ua = navigator.userAgent || "";
@@ -517,6 +522,15 @@ function App() {
   const canGoWithoutArg =
     Boolean(committedCategory && committedAction) &&
     !Z[committedCategory].actions[committedAction].needsArg;
+  const cmdlineHint = canGoWithoutArg
+    ? formatHint(
+        Z[committedCategory].actions[committedAction].goHint ||
+          `press ${enterKeyName} to run`,
+        enterKeyName,
+      )
+    : step === 2 && committedAction
+      ? Z[committedCategory].actions[committedAction].argHint || "type filename"
+      : "";
   const menuCategory = committedCategory || previewCategory;
   const activeActionDef =
     committedCategory && (previewAction || committedAction)
@@ -745,6 +759,9 @@ function App() {
           step >= 1 &&
             committedAction &&
             committedCategory &&
+            (suggesting ||
+              (activeActionDef.variants && activeActionDef.variants.length > 0) ||
+              (step === 2 && activeActionDef.shortcuts)) &&
             jsx("div", {
               id: "options",
               className:
@@ -754,17 +771,19 @@ function App() {
                 className:
                   "mx-auto max-w-[1280px] px-[16px] sm:px-[24px] py-[10px] flex items-center gap-[8px] min-w-0 overflow-x-auto no-scrollbar",
                 children: [
-                  jsxs("span", {
-                    className:
-                      "text-[10px] uppercase tracking-[0.12em] font-[800] text-[#64748b] shrink-0",
-                    style: {
-                      fontFamily: "Inter",
-                    },
-                    children: [
-                      "Options for ",
-                      Z[committedCategory].actions[previewAction || committedAction].label,
-                    ],
-                  }),
+                  (suggesting ||
+                    (activeActionDef.variants && activeActionDef.variants.length > 0)) &&
+                    jsxs("span", {
+                      className:
+                        "text-[10px] uppercase tracking-[0.12em] font-[800] text-[#64748b] shrink-0",
+                      style: {
+                        fontFamily: "Inter",
+                      },
+                      children: [
+                        "Options for ",
+                        activeActionDef.label,
+                      ],
+                    }),
                   ...(suggesting
                     ? suggestMatches.length
                       ? suggestMatches.map((name, index) =>
@@ -790,9 +809,7 @@ function App() {
                             children: "no matches",
                           }),
                         ]
-                    : Z[committedCategory].actions[
-                        previewAction || committedAction
-                      ].variants.map((item) =>
+                    : (activeActionDef.variants || []).map((item) =>
                         jsxs(
                           "div",
                           {
@@ -810,18 +827,12 @@ function App() {
                         ),
                       )),
                   step === 2 &&
-                    jsx("span", {
-                      className: "text-[10px] font-mono text-[#94a3b8] shrink-0",
-                      children: suggesting
-                        ? "tab complete · ↵ run"
-                        : "string · spaces ok · ↵ commit",
-                    }),
-                  step === 2 &&
                     !suggesting &&
+                    activeActionDef.shortcuts &&
                     jsx("div", {
                       id: "options-shortcuts",
                       className: "flex items-center gap-[6px] shrink-0",
-                      children: ["..", "/", "new"].map((item) =>
+                      children: activeActionDef.shortcuts.map((item) =>
                         jsx(
                           "button",
                           {
@@ -840,7 +851,9 @@ function App() {
                 ],
               }),
             }),
-          jsx("div", {
+          committedCategory &&
+            !committedAction &&
+            jsx("div", {
             id: "actions",
             className:
               "app-actions shrink-0 z-20 border-t border-[#e2e8f0] bg-white/90 backdrop-blur-xl",
@@ -855,7 +868,6 @@ function App() {
                   className: "chip-row",
                   children: Object.entries(Z[menuCategory].actions).map(
                     ([key, actionDef]) => {
-                      const committed = committedAction === key;
                       return jsxs(
                         "button",
                         {
@@ -863,14 +875,15 @@ function App() {
                             chooseAction(menuCategory, key);
                             shellRef.current?.focus();
                           },
-                          className: `chip rounded-[8px] border transition-all ${committed ? "bg-[#7c3aed] border-[#7c3aed] text-white" : "bg-[#f8fafc] border-[#e2e8f0] hover:bg-white hover:border-[#cbd5e1] text-[#0f172a]"}`,
+                          className: "chip chip-action rounded-[8px] border transition-all",
                           children: [
                             jsx("span", {
-                              className: `chip-key text-[12px] font-[800] font-mono px-[6px] h-[20px] rounded-[6px] flex items-center ${committed ? "bg-white/20" : "bg-[#0f172a] text-white"}`,
+                              className:
+                                "chip-key text-[12px] font-[800] font-mono px-[6px] h-[20px] rounded-[6px] flex items-center",
                               children: key.toUpperCase(),
                             }),
                             jsxs("span", {
-                              className: `chip-caption text-[11px] font-[700] ${committed ? "text-white" : "text-[#0f172a]"}`,
+                              className: "chip-caption text-[11px] font-[700]",
                               style: {
                                 fontFamily: "Inter",
                               },
@@ -887,7 +900,8 @@ function App() {
                             }),
                             actionDef.needsArg &&
                               jsx("span", {
-                                className: `chip-arg text-[8px] px-[6px] h-[16px] rounded-full font-[800] uppercase tracking-[0.08em] ${committed ? "bg-white/20 text-white" : "bg-[#fef3c7] text-[#92400e] border border-[#fde68a]"}`,
+                                className:
+                                  "chip-arg text-[8px] px-[6px] h-[16px] rounded-full font-[800] uppercase tracking-[0.08em] bg-white/20 text-white",
                                 children: "arg",
                               }),
                           ],
@@ -899,7 +913,8 @@ function App() {
                 }),
             }),
           }),
-          jsx("div", {
+          !committedCategory &&
+            jsx("div", {
             id: "categories",
             className:
               "app-categories shrink-0 z-20 border-t border-[#e2e8f0] bg-white/90 backdrop-blur-xl",
@@ -912,7 +927,6 @@ function App() {
                   id: "categories-chips",
                   className: "chip-row",
                   children: Object.keys(Z).map((item) => {
-                    const selected = menuCategory === item || previewCategory === item;
                     return jsxs(
                       "button",
                       {
@@ -923,7 +937,11 @@ function App() {
                           setTimeout(() => setFlash(null), 400);
                           shellRef.current?.focus();
                         },
-                        className: `chip rounded-[8px] border transition-all ${selected ? "bg-[#0f172a] border-[#0f172a] text-white" : "bg-[#f8fafc] border-[#e2e8f0] hover:bg-white hover:border-[#cbd5e1] text-[#0f172a]"}`,
+                        className: "chip chip-category rounded-[8px] border transition-all",
+                        style: {
+                          background: Z[item].color,
+                          borderColor: Z[item].color,
+                        },
                         children: [
                           jsx("span", {
                             className: "chip-key text-[12px] font-[800] font-mono",
@@ -1090,6 +1108,12 @@ function App() {
                                 children: enterKeyName,
                               }),
                             ],
+                          }),
+                        cmdlineHint &&
+                          jsx("div", {
+                            id: "cmdline-hint",
+                            className: "cmdline-hint",
+                            children: cmdlineHint,
                           }),
               ],
             }),

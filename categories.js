@@ -8,6 +8,7 @@ var Z = {
         "label": "list",
         "desc": "List contents",
         "needsArg": false,
+        "goHint": "press {enter} to list",
         "variants": [
           "list all",
           "files only",
@@ -18,17 +19,15 @@ var Z = {
         "label": "make",
         "desc": "Create new folder",
         "needsArg": true,
-        "variants": [
-          "empty folder",
-          "with .gitkeep",
-          "nested path"
-        ]
+        "argHint": "type folder name",
+        "variants": []
       },
       "n": {
         "label": "navigate",
         "desc": "Navigate directory",
         "needsArg": true,
         "suggest": "dirs",
+        "argHint": "type or pick a folder",
         "variants": [
           "to child",
           "to parent ..",
@@ -39,6 +38,7 @@ var Z = {
         "label": "remove",
         "desc": "Delete folder",
         "needsArg": true,
+        "argHint": "type folder name",
         "variants": [
           "soft delete",
           "force recursive"
@@ -49,6 +49,7 @@ var Z = {
         "desc": "Rename folder",
         "needsArg": true,
         "suggest": "child-dirs",
+        "argHint": "type old name then new name",
         "variants": [
           "old new",
           "unique prefix"
@@ -65,6 +66,7 @@ var Z = {
         "label": "view",
         "desc": "Open file",
         "needsArg": true,
+        "argHint": "type filename",
         "variants": [
           "preview",
           "raw",
@@ -75,6 +77,7 @@ var Z = {
         "label": "edit",
         "desc": "Edit contents",
         "needsArg": true,
+        "argHint": "type filename",
         "variants": [
           "append text",
           "overwrite"
@@ -84,6 +87,7 @@ var Z = {
         "label": "new",
         "desc": "Create file",
         "needsArg": true,
+        "argHint": "type filename",
         "variants": [
           "empty",
           "from template"
@@ -93,6 +97,7 @@ var Z = {
         "label": "delete",
         "desc": "Remove file",
         "needsArg": true,
+        "argHint": "type filename",
         "variants": [
           "soft",
           "permanent"
@@ -110,6 +115,7 @@ var Z = {
         "desc": "Launch a program",
         "needsArg": true,
         "suggest": "programs",
+        "argHint": "type a program name",
         "variants": [
           "foreground",
           "background",
@@ -120,6 +126,7 @@ var Z = {
         "label": "list",
         "desc": "List programs",
         "needsArg": false,
+        "goHint": "press {enter} to list",
         "variants": [
           "all programs",
           "recent",
@@ -137,6 +144,7 @@ var Z = {
         "label": "info",
         "desc": "System info",
         "needsArg": false,
+        "goHint": "press {enter} to run",
         "variants": [
           "os + shell",
           "memory",
@@ -147,6 +155,7 @@ var Z = {
         "label": "clear",
         "desc": "Clear history",
         "needsArg": false,
+        "goHint": "press {enter} to run",
         "variants": [
           "clear log",
           "clear + reset fs"
@@ -156,6 +165,7 @@ var Z = {
         "label": "help",
         "desc": "Show help",
         "needsArg": false,
+        "goHint": "press {enter} to run",
         "variants": [
           "short",
           "verbose"
@@ -172,6 +182,7 @@ var Z = {
         "label": "list",
         "desc": "List commands",
         "needsArg": false,
+        "goHint": "press {enter} to list",
         "variants": [
           "all categories",
           "current category"
@@ -181,6 +192,7 @@ var Z = {
         "label": "cats",
         "desc": "Show categories",
         "needsArg": false,
+        "goHint": "press {enter} to run",
         "variants": [
           "grid",
           "list"
