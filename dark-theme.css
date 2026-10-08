@@ -140,12 +140,32 @@ body {
   font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* ---- bottom bars ---- */
-#options,
-#actions,
+/* ---- bottom bars: three-step hierarchy ----
+   categories = foundation (heaviest), actions = middle (violet-tinted),
+   options = contextual strip (lightest, amber-tinted, denser) */
 #categories {
-  background: rgba(7, 12, 23, 0.92);
-  border-top-color: var(--line);
+  background: #0d1628;
+  border-top: 1px solid var(--line-soft);
+}
+
+#actions {
+  background: rgba(124, 58, 237, 0.07);
+  border-top: 1px solid rgba(167, 139, 250, 0.28);
+}
+
+#options {
+  background: rgba(217, 119, 6, 0.05);
+  border-top: 1px dashed rgba(251, 191, 36, 0.3);
+}
+
+#options-inner {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+#actions-inner {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 #cmdline {
