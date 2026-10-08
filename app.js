@@ -519,6 +519,8 @@ function App() {
 
   const enterKeyName = isAppleOs() ? "Return" : "Enter";
   const enterKeyGlyph = isAppleOs() ? "↩" : "↵";
+  const catKey = committedCategory || previewCategory;
+  const catColor = catKey ? Z[catKey].color : null;
   const canGoWithoutArg =
     Boolean(committedCategory && committedAction) &&
     !Z[committedCategory].actions[committedAction].needsArg;
@@ -989,7 +991,10 @@ function App() {
               children: [
                         jsxs("div", {
                           id: "field-cat",
-                          className: `flex items-center gap-[6px] h-[32px] px-[10px] rounded-[8px] border-[2px] font-mono text-[12px] font-[800] shrink-0 ${committedCategory ? "bg-[#2563eb] border-[#2563eb] text-white" : previewCategory ? "bg-[#eff6ff] border-[#2563eb] text-[#1d4ed8]" : "bg-white border-[#cbd5e1] text-[#94a3b8]"}`,
+                          className: `flex items-center gap-[6px] h-[32px] px-[10px] rounded-[8px] border-[2px] font-mono text-[12px] font-[800] shrink-0 ${catKey ? "text-white" : "bg-white border-[#cbd5e1] text-[#94a3b8]"}`,
+                          style: catColor
+                            ? { background: catColor, borderColor: catColor }
+                            : undefined,
                           children: [
                             committedCategory
                               ? committedCategory.toUpperCase()

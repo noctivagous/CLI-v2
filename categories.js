@@ -60,7 +60,7 @@ var Z = {
   "f": {
     "label": "file",
     "full": "FILE",
-    "color": "#7c3aed",
+    "color": "#0891b2",
     "actions": {
       "v": {
         "label": "view",
