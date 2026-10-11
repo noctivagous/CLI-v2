@@ -128,6 +128,7 @@ function App() {
   const [step, setStep] = React.useState(0);
   const [committedCategory, setCommittedCategory] = React.useState(null);
   const [committedAction, setCommittedAction] = React.useState(null);
+  const [forceArg, setForceArg] = React.useState(false);
   const [previewCategory, setPreviewCategory] = React.useState(null);
   const [previewAction, setPreviewAction] = React.useState(null);
   const [arg, setArg] = React.useState("");
@@ -406,6 +407,7 @@ function App() {
   const resetFields = () => {
     setCommittedCategory(null);
     setCommittedAction(null);
+    setForceArg(false);
     setPreviewCategory(null);
     setPreviewAction(null);
     setArg("");
@@ -417,6 +419,7 @@ function App() {
     setPreviewCategory(null);
     setPreviewAction(null);
     setCommittedAction(null);
+    setForceArg(false);
     setArg("");
     setStep(1);
   };
@@ -428,13 +431,13 @@ function App() {
     setPreviewAction(null);
     setCommittedAction(actionKey);
     setArg("");
-    setStep(Z[category].actions[actionKey].needsArg ? 2 : 1);
+    setStep(Z[category].actions[actionKey].needsArg || forceArg ? 2 : 1);
   };
 
   const execute = () => {
     if (!committedCategory || !committedAction) return;
     const needsArg = Z[committedCategory].actions[committedAction].needsArg;
-    runCommand(committedCategory, committedAction, needsArg ? arg.trim() : "");
+    runCommand(committedCategory, committedAction, needsArg || forceArg ? arg.trim() : "");
     resetFields();
   };
 
@@ -457,12 +460,24 @@ function App() {
         const letter = key.toLowerCase();
         if (committedCategory && letter in Z[committedCategory].actions) {
           chooseAction(committedCategory, letter);
+        } else if (letter === "o") {
+          // Optional-arg prefix: the next action opens ARG even when it
+          // does not require one. Harmless for actions that need args.
+          if (committedAction) {
+            setForceArg(true);
+            setArg("");
+            setStep(2);
+          } else {
+            setForceArg(true);
+          }
         }
       } else if (key === "Backspace" || key === "Delete") {
         event.preventDefault();
         if (committedAction) {
           setCommittedAction(null);
           setArg("");
+        } else if (forceArg) {
+          setForceArg(false);
         } else {
           resetFields();
         }
@@ -470,7 +485,11 @@ function App() {
         resetFields();
       } else if (key === "Enter") {
         event.preventDefault();
-        if (committedAction && !Z[committedCategory].actions[committedAction].needsArg) {
+        if (
+          committedAction &&
+          !Z[committedCategory].actions[committedAction].needsArg &&
+          !forceArg
+        ) {
           execute();
         }
       }
@@ -521,9 +540,16 @@ function App() {
   const enterKeyGlyph = isAppleOs() ? "↩" : "↵";
   const catKey = committedCategory || previewCategory;
   const catColor = catKey ? Z[catKey].color : null;
-  const canGoWithoutArg =
+  const forceArgArmed =
+    forceArg && Boolean(committedCategory) && !committedAction && step === 1;
+  const forceArgActive =
+    forceArg &&
     Boolean(committedCategory && committedAction) &&
     !Z[committedCategory].actions[committedAction].needsArg;
+  const canGoWithoutArg =
+    Boolean(committedCategory && committedAction) &&
+    !Z[committedCategory].actions[committedAction].needsArg &&
+    !forceArg;
   const cmdlineHint = canGoWithoutArg
     ? formatHint(
         Z[committedCategory].actions[committedAction].goHint ||
@@ -531,8 +557,11 @@ function App() {
         enterKeyName,
       )
     : step === 2 && committedAction
-      ? Z[committedCategory].actions[committedAction].argHint || "type filename"
-      : "";
+      ? Z[committedCategory].actions[committedAction].argHint ||
+        (forceArg ? "type options (optional)" : "type filename")
+      : forceArgArmed
+        ? "pick an action — arg follows"
+        : "";
   const menuCategory = committedCategory || previewCategory;
   const activeActionDef =
     committedCategory && (previewAction || committedAction)
@@ -859,11 +888,11 @@ function App() {
             id: "actions",
             className:
               "app-actions shrink-0 z-20 border-t border-[#e2e8f0] bg-white/90 backdrop-blur-xl",
-            children: jsx("div", {
+            children: jsxs("div", {
               id: "actions-inner",
               className:
                 "mx-auto max-w-[1280px] px-[16px] sm:px-[24px] py-[10px] flex items-center gap-[8px] min-w-0 overflow-x-auto no-scrollbar",
-              children:
+              children: [
                 menuCategory &&
                 jsx("div", {
                   id: "actions-chips",
@@ -913,6 +942,19 @@ function App() {
                     },
                   ),
                 }),
+                jsx("button", {
+                  id: "actions-hint",
+                  type: "button",
+                  onClick: () => {
+                    setForceArg(true);
+                    shellRef.current?.focus();
+                  },
+                  className: "text-[11px] font-mono text-[#94a3b8] shrink-0",
+                  children: forceArg
+                    ? "O armed — pick an action, arg follows"
+                    : "O adds optional args",
+                }),
+              ],
             }),
           }),
           !committedCategory &&
@@ -1030,15 +1072,21 @@ function App() {
                         }),
                         jsxs("div", {
                           id: "field-act",
-                          className: `flex items-center gap-[6px] h-[32px] px-[10px] rounded-[8px] border-[2px] font-mono text-[12px] font-[800] shrink-0 ${committedAction ? "bg-[#7c3aed] border-[#7c3aed] text-white" : previewAction ? "bg-[#f5f3ff] border-[#7c3aed] text-[#6d28d9]" : step === 1 ? "bg-white border-[#7c3aed] text-[#0f172a]" : "bg-white border-[#cbd5e1] text-[#94a3b8]"}`,
+                          className: `flex items-center gap-[6px] h-[32px] px-[10px] rounded-[8px] border-[2px] font-mono text-[12px] font-[800] shrink-0 ${committedAction ? "bg-[#7c3aed] border-[#7c3aed] text-white" : forceArgArmed ? "bg-[#faf5ff] border-[#7c3aed] text-[#6d28d9]" : previewAction ? "bg-[#f5f3ff] border-[#7c3aed] text-[#6d28d9]" : step === 1 ? "bg-white border-[#7c3aed] text-[#0f172a]" : "bg-white border-[#cbd5e1] text-[#94a3b8]"}`,
+                          style:
+                            forceArgArmed || forceArgActive
+                              ? { borderStyle: "dashed" }
+                              : undefined,
                           children: [
                             committedAction
                               ? committedAction.toUpperCase()
-                              : previewAction
-                                ? previewAction.toUpperCase()
-                                : step === 1
-                                  ? "_"
-                                  : "–",
+                              : forceArgArmed
+                                ? "O"
+                                : previewAction
+                                  ? previewAction.toUpperCase()
+                                  : step === 1
+                                    ? "_"
+                                    : "–",
                             jsx("span", {
                               className: "text-[10px] font-[700] uppercase tracking-[0.08em]",
                               style: {
@@ -1047,16 +1095,25 @@ function App() {
                               children:
                                 committedAction && committedCategory
                                   ? Z[committedCategory].actions[committedAction].label
-                                  : previewAction && committedCategory
-                                    ? Z[committedCategory].actions[previewAction].label
-                                    : "act",
+                                  : forceArgArmed
+                                    ? "opt args"
+                                    : previewAction && committedCategory
+                                      ? Z[committedCategory].actions[previewAction].label
+                                      : "act",
                             }),
                             step === 1 &&
                               jsx("div", {
                                 className:
                                   "w-[8px] h-[16px] bg-[#7c3aed] cursor-blink rounded-[2px]",
                               }),
+                            forceArgActive &&
+                              jsx("span", {
+                                className:
+                                  "text-[8px] px-[6px] h-[16px] rounded-full font-[800] uppercase tracking-[0.08em] bg-white/20 text-white",
+                                children: "+arg",
+                              }),
                             committedAction &&
+                              !forceArgActive &&
                               jsx("span", {
                                 className: "text-[12px]",
                                 children: "✓",

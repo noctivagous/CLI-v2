@@ -16,6 +16,7 @@ added later.
 d (directory) › l (list) › Return          # list cwd
 d (directory) › m (make) › mydir › Return  # create a folder
 d (directory) › n (navigate) › Doc › Return  # unique prefix → Documents
+d (directory) › o › l (list) › args › Return  # optional args for an arg-less action
 ```
 
 Open `Category-Cli-V2-Graphical.html` in a browser. No build step.
@@ -27,10 +28,10 @@ Each letter **commits** as you type. There is no separate preview-then-lock step
 | Step | Keys | What happens |
 | --- | --- | --- |
 | Category | `D` `F` `P` `S` `H` | Fills CAT. Category bar hides; action chips appear. |
-| Action | letter for that category | Fills ACT. Action bar hides. If the action needs an argument, ARG becomes active. If it does not, a **Go** button appears. |
+| Action | letter for that category, or `O` for optional args | Fills ACT. Action bar hides. If the action needs an argument, ARG becomes active. If it does not, a **Go** button appears — unless `O` was typed first, in which case ACT turns dashed with an `opt args` / `+arg` marker and ARG becomes active instead. `O` before an action that already needs an argument is harmless and proceeds normally. |
 | Argument | printable keys, including Space | Appends to ARG. Tab cycles autocomplete when the action supports it. |
 | Run | Return / Enter, or tap **Go** | Executes. On Apple the button reads **Go ↩ Return**; elsewhere **Go ↵ Enter**. |
-| Back | Delete / Backspace / Escape | Trims ARG, then clears ACT, then clears CAT. Matching bars come back. |
+| Back | Delete / Backspace / Escape | Trims ARG, then clears ACT, then disarms `O`, then clears CAT. Matching bars come back. |
 
 Space is **not** the run key. It is a character in ARG (folder and file names may contain spaces).
 
@@ -98,6 +99,7 @@ Mock home at `/` (cloned from `seed-fs.js` on load):
 1. Open `Category-Cli-V2-Graphical.html`.
 2. Type:
    - `d` `l` Return — list `/`
+   - `d` `o` `l` `myfilter` Return — list with optional args (ACT shows dashed `+arg`, no Go button)
    - `d` `m` `mydir` Return — make a folder
    - `d` `n` `Doc` Return — navigate to `Documents`
    - `d` `e` `Pictures` Space `Album` Return — rename
