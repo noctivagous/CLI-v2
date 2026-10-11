@@ -28,7 +28,7 @@ Each letter **commits** as you type. There is no separate preview-then-lock step
 | Step | Keys | What happens |
 | --- | --- | --- |
 | Category | `D` `F` `P` `S` `H` | Fills CAT. Category bar hides; action chips appear. |
-| Action | letter for that category, or `O` for optional args | Fills ACT. Action bar hides. If the action needs an argument, ARG becomes active. If it does not, a **Go** button appears — unless `O` was typed first, in which case ACT turns dashed with an `opt args` / `+arg` marker and ARG becomes active instead. `O` before an action that already needs an argument is harmless and proceeds normally. |
+| Action | letter for that category, or `O` for optional args | Fills ACT. Action bar hides. If the action needs an argument, ARG becomes active. If it does not need one, it runs **immediately** — unless the action sets `requiresConfirmation` (currently only `s › c` clear), in which case a **Go** button appears and Return is required. Typing `O` first suppresses the immediate run: ACT turns dashed with an `opt args` / `+arg` marker and ARG becomes active instead, and Return in ARG always runs. `O` before an action that already needs an argument is harmless and proceeds normally. |
 | Argument | printable keys, including Space | Appends to ARG. Tab cycles autocomplete when the action supports it. |
 | Run | Return / Enter, or tap **Go** | Executes. On Apple the button reads **Go ↩ Return**; elsewhere **Go ↵ Enter**. |
 | Back | Delete / Backspace / Escape | Trims ARG, then clears ACT, then disarms `O`, then clears CAT. Matching bars come back. |
@@ -98,8 +98,9 @@ Mock home at `/` (cloned from `seed-fs.js` on load):
 
 1. Open `Category-Cli-V2-Graphical.html`.
 2. Type:
-   - `d` `l` Return — list `/`
+   - `d` `l` — list `/` (runs immediately, no Return needed)
    - `d` `o` `l` `myfilter` Return — list with optional args (ACT shows dashed `+arg`, no Go button)
+   - `s` `c` Return — clear history (requires confirmation via Go / Return)
    - `d` `m` `mydir` Return — make a folder
    - `d` `n` `Doc` Return — navigate to `Documents`
    - `d` `e` `Pictures` Space `Album` Return — rename

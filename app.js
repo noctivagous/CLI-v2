@@ -426,12 +426,19 @@ function App() {
 
   const chooseAction = (category, actionKey) => {
     if (!category || !Z[category]?.actions[actionKey]) return;
+    const actionDef = Z[category].actions[actionKey];
+    if (!actionDef.needsArg && !actionDef.requiresConfirmation && !forceArg) {
+      // No-arg actions run immediately; confirmation-gated ones wait for Go.
+      runCommand(category, actionKey, "");
+      resetFields();
+      return;
+    }
     setCommittedCategory(category);
     setPreviewCategory(null);
     setPreviewAction(null);
     setCommittedAction(actionKey);
     setArg("");
-    setStep(Z[category].actions[actionKey].needsArg || forceArg ? 2 : 1);
+    setStep(actionDef.needsArg || forceArg ? 2 : 1);
   };
 
   const execute = () => {
@@ -488,6 +495,7 @@ function App() {
         if (
           committedAction &&
           !Z[committedCategory].actions[committedAction].needsArg &&
+          Z[committedCategory].actions[committedAction].requiresConfirmation &&
           !forceArg
         ) {
           execute();
@@ -549,6 +557,7 @@ function App() {
   const canGoWithoutArg =
     Boolean(committedCategory && committedAction) &&
     !Z[committedCategory].actions[committedAction].needsArg &&
+    Z[committedCategory].actions[committedAction].requiresConfirmation &&
     !forceArg;
   const cmdlineHint = canGoWithoutArg
     ? formatHint(

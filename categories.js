@@ -155,6 +155,7 @@ var Z = {
         "label": "clear",
         "desc": "Clear history",
         "needsArg": false,
+        "requiresConfirmation": true,
         "goHint": "press {enter} to run",
         "variants": [
           "clear log",
