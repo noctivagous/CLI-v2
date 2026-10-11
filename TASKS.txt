@@ -1,0 +1,17 @@
+
+We can convert the argument field to a tree.
+
+[ ] i (interface) , n (new), w (window)
+
+s  (directory sidebar)
+
+a
+
+p
+
+new window
+  --->
+  --->
+
+
+[ ] i , 
