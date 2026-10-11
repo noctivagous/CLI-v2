@@ -4,6 +4,18 @@ this brings up a new command line opportunity which is to set
 permanent parameters for the actions.  
 system > k (configure) >
 
+[ ] App Kit
+    [  ] Apps will be provided a kit where they can provide
+    menus.  They will inherit a structure from the shell.
+    So the shell will be an app.  The first demo is an
+    app that lets the user make page layouts by modifying
+    rectangles and subdividing them.  Every app will
+    have a category for leaving the app and going back
+    to the shell and the system category will be there too.
+	[  ] a mode in the future is that the args field accepts
+	keystrokes of all kinds until Return or Esc are entered,
+	a live control state of an app running.
+
 We can convert the argument field to a tree.
 
 
