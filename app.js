@@ -133,10 +133,21 @@ function App() {
   const [previewCategory, setPreviewCategory] = React.useState(null);
   const [previewAction, setPreviewAction] = React.useState(null);
   const [arg, setArg] = React.useState("");
-  const [cwd, setCwd] = React.useState("/");
+  const [tabs, setTabs] = React.useState(() => [{ id: "t1", cwd: "/", history: [] }]);
+  const [activeTab, setActiveTab] = React.useState(0);
+  const tabSeq = React.useRef(1);
+  const tab = tabs[activeTab] ?? tabs[0];
+  const cwd = tab.cwd;
+  const history = tab.history;
+  const updateTab = (index, patch) =>
+    setTabs((prev) => prev.map((entry, i) => (i === index ? { ...entry, ...patch } : entry)));
+  const setCwd = (value) => updateTab(activeTab, { cwd: value });
+  const setHistory = (value) =>
+    updateTab(activeTab, {
+      history: typeof value === "function" ? value(tab.history) : value,
+    });
   const [sideOpen, setSideOpen] = React.useState(false);
   const [fs, setFs] = React.useState(() => cloneFs(D0));
-  const [history, setHistory] = React.useState([]);
   const [flash, setFlash] = React.useState(null);
   const shellRef = React.useRef(null);
   const logRef = React.useRef(null);
@@ -399,6 +410,16 @@ function App() {
       if (action === "s") {
         setSideOpen((open) => !open);
         output = { type: "none" };
+      } else if (action === "t") {
+        tabSeq.current += 1;
+        const tabId = `t${tabSeq.current}`;
+        setTabs((prev) => [...prev, { id: tabId, cwd, history: [] }]);
+        setActiveTab(tabs.length);
+        output = { type: "none" };
+      } else if (action === "l" || action === "r") {
+        const delta = action === "l" ? -1 : 1;
+        setActiveTab((index) => (index + delta + tabs.length) % tabs.length);
+        output = { type: "none" };
       }
     }
 
@@ -645,6 +666,27 @@ function App() {
                 children: cwd,
               }),
             ],
+          }),
+          jsx("div", {
+            id: "tabbar",
+            children: tabs.map((entry, index) =>
+              jsx(
+                "button",
+                {
+                  id: `tab-${entry.id}`,
+                  type: "button",
+                  "data-active": index === activeTab,
+                  title: entry.cwd,
+                  onMouseDown: (event) => event.preventDefault(),
+                  onClick: () => {
+                    setActiveTab(index);
+                    shellRef.current?.focus();
+                  },
+                  children: `${index + 1} ${entry.cwd}`,
+                },
+                entry.id,
+              ),
+            ),
           }),
           jsxs("div", {
             id: "mid-row",

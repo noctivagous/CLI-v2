@@ -1,5 +1,15 @@
 
+[ ] for now let's set the requiresConfirmation to false for system > clear.  
+this brings up a new command line opportunity which is to set
+permanent parameters for the actions.  
+system > k (configure) >
+
 We can convert the argument field to a tree.
+
+
+[  ]i, t (make new tab and switch to it)
+[ ] i, l (change to left tab)
+[ ] i, r (change to right tab)
 
 [ ] i (interface) , n (new), w (window)
 

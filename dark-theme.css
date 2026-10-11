@@ -355,6 +355,42 @@ button:focus-visible {
   }
 }
 
+/* ---- tab strip (i › t/l/r) ---- */
+#tabbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #0a101d;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+#tabbar button {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line-soft);
+  background: var(--panel-3);
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#tabbar button:hover {
+  border-color: rgba(96, 165, 250, 0.4);
+  color: var(--ink);
+}
+
+#tabbar button[data-active="true"] {
+  background: var(--cat-wash);
+  border-color: rgba(96, 165, 250, 0.45);
+  color: var(--cat);
+}
+
 /* ---- side directory column (i › s toggle) ---- */
 #sidecol {
   background: var(--panel-2);

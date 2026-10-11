@@ -214,6 +214,30 @@ var Z = {
           "open",
           "close"
         ]
+      },
+      "t": {
+        "label": "tab",
+        "desc": "Open new tab and switch to it",
+        "needsArg": false,
+        "variants": [
+          "new tab"
+        ]
+      },
+      "l": {
+        "label": "left",
+        "desc": "Go to left tab",
+        "needsArg": false,
+        "variants": [
+          "previous tab"
+        ]
+      },
+      "r": {
+        "label": "right",
+        "desc": "Go to right tab",
+        "needsArg": false,
+        "variants": [
+          "next tab"
+        ]
       }
     }
   }
