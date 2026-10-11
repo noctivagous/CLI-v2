@@ -200,5 +200,21 @@ var Z = {
         ]
       }
     }
+  },
+  "i": {
+    "label": "interface",
+    "full": "INTERFACE",
+    "color": "#4f46e5",
+    "actions": {
+      "s": {
+        "label": "side",
+        "desc": "Toggle directory side column",
+        "needsArg": false,
+        "variants": [
+          "open",
+          "close"
+        ]
+      }
+    }
   }
 };

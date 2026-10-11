@@ -94,6 +94,7 @@ const SHORT_WORDS = {
   execute: "exec",
   navigate: "nav",
   rename: "ren",
+  interface: "int",
 }
 
 function shortWord(word) {
@@ -133,6 +134,7 @@ function App() {
   const [previewAction, setPreviewAction] = React.useState(null);
   const [arg, setArg] = React.useState("");
   const [cwd, setCwd] = React.useState("/");
+  const [sideOpen, setSideOpen] = React.useState(false);
   const [fs, setFs] = React.useState(() => cloneFs(D0));
   const [history, setHistory] = React.useState([]);
   const [flash, setFlash] = React.useState(null);
@@ -146,6 +148,11 @@ function App() {
       type: node.type,
     }));
   }, [cwdNode]);
+  const sideItems = React.useMemo(() => listingFor(fs, cwd) || [], [fs, cwd]);
+  const sideNavigate = (target) => {
+    const dir = getNode(fs, target);
+    if (dir && dir.type === "dir") setCwd(target);
+  };
 
   React.useEffect(() => {
     shellRef.current?.focus();
@@ -371,7 +378,7 @@ function App() {
       } else if (action === "h") {
         output = {
           type: "text",
-          data: "help: d=directory f=file p=program s=system h=help | action letter opens arg | enter=run | tab=complete | delete=back",
+          data: "help: d=directory f=file p=program s=system h=help i=interface | action letter opens arg | enter=run | tab=complete | delete=back",
         };
       }
     } else if (category === "h") {
@@ -385,8 +392,13 @@ function App() {
       } else {
         output = {
           type: "text",
-          data: "categories: [d] directory, [f] file, [p] program, [s] system, [h] help",
+          data: "categories: [d] directory, [f] file, [p] program, [s] system, [h] help, [i] interface",
         };
+      }
+    } else if (category === "i") {
+      if (action === "s") {
+        setSideOpen((open) => !open);
+        output = { type: "none" };
       }
     }
 
@@ -634,6 +646,10 @@ function App() {
               }),
             ],
           }),
+          jsxs("div", {
+            id: "mid-row",
+            style: { display: "flex", flex: "1 1 auto", minHeight: 0 },
+            children: [
           jsx("div", {
             id: "log",
             ref: logRef,
@@ -795,6 +811,72 @@ function App() {
                   }),
               }),
             }),
+          }),
+              sideOpen &&
+                jsx("aside", {
+                  id: "sidecol",
+                  style: {
+                    width: 240,
+                    flexShrink: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: 0,
+                    overflow: "hidden",
+                  },
+                  children: [
+                    jsx("div", {
+                      id: "sidecol-head",
+                      title: cwd,
+                      children: cwd,
+                    }),
+                    jsx("div", {
+                      id: "sidecol-list",
+                      children: [
+                        jsx("button", {
+                          id: "sidecol-up",
+                          type: "button",
+                          onMouseDown: (event) => event.preventDefault(),
+                          onClick: () => {
+                            sideNavigate(joinPath(cwd, ".."));
+                            shellRef.current?.focus();
+                          },
+                          children: "..",
+                        }),
+                        ...sideItems.map((entry) =>
+                          entry.type === "dir"
+                            ? jsx(
+                                "button",
+                                {
+                                  id: `sidecol-dir-${entry.name}`,
+                                  type: "button",
+                                  onMouseDown: (event) => event.preventDefault(),
+                                  onClick: () => {
+                                    sideNavigate(joinPath(cwd, entry.name));
+                                    shellRef.current?.focus();
+                                  },
+                                  children: entry.name,
+                                },
+                                entry.name,
+                              )
+                            : jsx(
+                                "div",
+                                {
+                                  id: `sidecol-file-${entry.name}`,
+                                  children: entry.name,
+                                },
+                                entry.name,
+                              ),
+                        ),
+                        sideItems.length === 0 &&
+                          jsx("div", {
+                            id: "sidecol-empty",
+                            children: "empty directory",
+                          }),
+                      ],
+                    }),
+                  ],
+                }),
+            ],
           }),
           step >= 1 &&
             committedAction &&

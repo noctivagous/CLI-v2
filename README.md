@@ -45,9 +45,10 @@ Instructions sit on the command line: to the right of ARG (`type folder name`, `
 [p] program     [x] execute     [l]ist
 [s] system      [i]nfo  [c]lear [h]elp
 [h] help        [l]ist  [c]ats
+[i] interface   [s]ide
 ```
 
-Chip colors: directory blue `#2563eb`, file cyan `#0891b2`, program pink `#db2777`, system green `#059669`, help amber `#d97706`. Action chips are solid magenta `#7c3aed`. The CAT field uses the selected category color; ACT stays magenta; ARG is amber.
+Chip colors: directory blue `#2563eb`, file cyan `#0891b2`, program pink `#db2777`, system green `#059669`, help amber `#d97706`, interface indigo `#4f46e5`. Action chips are solid magenta `#7c3aed`. The CAT field uses the selected category color; ACT stays magenta; ARG is amber.
 
 `d` is both the directory category and `f › d` (delete file). `h` is both help and `s › h` (system help). After CAT is filled, the letter is an action. Escape back to pick a different category.
 
@@ -56,6 +57,8 @@ Chip colors: directory blue `#2563eb`, file cyan `#0891b2`, program pink `#db277
 Fixed 100dvh window (`#app-shell` padded 12px / 24px from 640px). Dark title bar shows **Category CLI v3** and the current path (`cwd`).
 
 The middle pane is the **output log** only. It starts empty. New cards **append** at the bottom (oldest first) and the pane scrolls to the latest. No “Output Log” heading and no always-on directory browser.
+
+`i › s` toggles a persistent **side column** on the right showing the current directory listing. It follows global `cwd` (ignores per-card in-place browsing), refreshes on navigate/make, and stays open across commands until toggled off. Clicking a directory in the column navigates there; `..` goes to the parent. Below 640px it overlays the log as a right-anchored panel instead of squeezing it.
 
 Above the command footer, bars appear only when they apply:
 
@@ -101,6 +104,7 @@ Mock home at `/` (cloned from `seed-fs.js` on load):
    - `d` `l` — list `/` (runs immediately, no Return needed)
    - `d` `o` `l` `myfilter` Return — list with optional args (ACT shows dashed `+arg`, no Go button)
    - `s` `c` Return — clear history (requires confirmation via Go / Return)
+   - `i` `s` — toggle the directory side column (runs immediately)
    - `d` `m` `mydir` Return — make a folder
    - `d` `n` `Doc` Return — navigate to `Documents`
    - `d` `e` `Pictures` Space `Album` Return — rename
