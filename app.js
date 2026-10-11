@@ -416,8 +416,8 @@ function App() {
         setTabs((prev) => [...prev, { id: tabId, cwd, history: [] }]);
         setActiveTab(tabs.length);
         output = { type: "none" };
-      } else if (action === "l" || action === "r") {
-        const delta = action === "l" ? -1 : 1;
+      } else if (action === "[" || action === "]") {
+        const delta = action === "[" ? -1 : 1;
         setActiveTab((index) => (index + delta + tabs.length) % tabs.length);
         output = { type: "none" };
       }
@@ -496,7 +496,7 @@ function App() {
         resetFields();
       }
     } else if (step === 1) {
-      if (/^[a-zA-Z]$/.test(key)) {
+      if (/^[a-zA-Z\[\]]$/.test(key)) {
         const letter = key.toLowerCase();
         if (committedCategory && letter in Z[committedCategory].actions) {
           chooseAction(committedCategory, letter);

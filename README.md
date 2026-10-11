@@ -45,7 +45,7 @@ Instructions sit on the command line: to the right of ARG (`type folder name`, `
 [p] program     [x] execute     [l]ist
 [s] system      [i]nfo  [c]lear [h]elp
 [h] help        [l]ist  [c]ats
-[i] interface   [s]ide  [t]ab  [l]eft  [r]ight
+[i] interface   [s]ide  [t]ab  `[` / `]` (left/right tab)
 ```
 
 Chip colors: directory blue `#2563eb`, file cyan `#0891b2`, program pink `#db2777`, system green `#059669`, help amber `#d97706`, interface indigo `#4f46e5`. Action chips are solid magenta `#7c3aed`. The CAT field uses the selected category color; ACT stays magenta; ARG is amber.
@@ -60,7 +60,7 @@ The middle pane is the **output log** only. It starts empty. New cards **append*
 
 `i › s` toggles a persistent **side column** on the right showing the current directory listing. It follows global `cwd` (ignores per-card in-place browsing), refreshes on navigate/make, and stays open across commands until toggled off. Clicking a directory in the column navigates there; `..` goes to the parent. Below 640px it overlays the log as a right-anchored panel instead of squeezing it.
 
-**Tabs:** `i › t` opens a new tab (inheriting the current `cwd`, empty log) and switches to it; `i › l` / `i › r` cycle the active tab with wraparound. Each tab keeps its own `cwd` and output log while sharing one filesystem; the tab strip under the titlebar shows `n + cwd` per tab and is clickable. `s › c` clears only the active tab's log.
+**Tabs:** `i › t` opens a new tab (inheriting the current `cwd`, empty log) and switches to it; `i › [` / `i › ]` cycle the active tab with wraparound. Each tab keeps its own `cwd` and output log while sharing one filesystem; the tab strip under the titlebar shows `n + cwd` per tab and is clickable. `s › c` clears only the active tab's log.
 
 Above the command footer, bars appear only when they apply:
 
@@ -108,7 +108,7 @@ Mock home at `/` (cloned from `seed-fs.js` on load):
    - `s` `c` Return — clear history (requires confirmation via Go / Return)
    - `i` `s` — toggle the directory side column (runs immediately)
    - `i` `t` — open a new tab and switch to it
-   - `i` `l` / `i` `r` — switch to the left / right tab (wraps around)
+   - `i` `[` / `i` `]` — switch to the left / right tab (wraps around)
    - `d` `m` `mydir` Return — make a folder
    - `d` `n` `Doc` Return — navigate to `Documents`
    - `d` `e` `Pictures` Space `Album` Return — rename

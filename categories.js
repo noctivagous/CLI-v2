@@ -223,7 +223,7 @@ var Z = {
           "new tab"
         ]
       },
-      "l": {
+      "[": {
         "label": "left",
         "desc": "Go to left tab",
         "needsArg": false,
@@ -231,7 +231,7 @@ var Z = {
           "previous tab"
         ]
       },
-      "r": {
+      "]": {
         "label": "right",
         "desc": "Go to right tab",
         "needsArg": false,
